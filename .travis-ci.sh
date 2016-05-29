@@ -30,6 +30,8 @@ eval `opam config env`
 
 export OCAMLRUNPARAM=b
 
+opam install ocamlfind
+
 # Test for make and make clean
 make && make clean
 
