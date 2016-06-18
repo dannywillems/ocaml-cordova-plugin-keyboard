@@ -1,36 +1,55 @@
 (* -------------------------------------------------------------------------- *)
-class keyboard : Ojs.t ->
-  object
-    inherit Ojs.obj
+val shrink_view : bool -> unit
+[@@js.global "Keyboard.shrinkView"]
 
-    method shrink_view : bool -> unit
-    method hide_form_accessory_bar : bool -> unit
-    method disable_scrolling_in_shrink_view : bool -> unit
-    method hide : unit -> unit
-    method show : unit -> unit
-    method is_visible : bool
-    method automatic_scroll_to_top_on_hiding : bool
-  end
+val hide_form_accessory_bar : bool -> unit
+[@@js.global "Keyboard.hideFormAccessoryBar"]
+
+val disable_scrolling_in_shrink_view : bool -> unit
+[@@js.global "Keyboard.disableScrollingInShrinkView"]
+
+val hide : unit -> unit
+[@@js.global "Keyboard.hide"]
+
+val show : unit -> unit
+[@@js.global "Keyboard.show"]
+
+val is_visible : unit -> bool
+[@@js.get "Keyboard.isVisible"]
+
+val automatic_scroll_to_top_on_hiding : unit -> bool
+[@@js.get "Keyboard.automaticScrollToTopOnHiding"]
+
+type keyboard = private Ojs.t
+val keyboard : keyboard [@@js.global "Keyboard"]
+
+[@@@js.stop]
+val set_automatic_scroll_to_top_on_hiding : bool -> unit
+[@@@js.start]
+
+[@@@js.implem
+val set_automatic_scroll_to_top_on_hiding_internal : keyboard -> bool -> unit
+[@@js.set]
+let set_automatic_scroll_to_top_on_hiding =
+  set_automatic_scroll_to_top_on_hiding_internal keyboard
+]
+
 
 module Event :
   sig
-    class event_height : Ojs.t ->
-      object
-        inherit Ojs.obj
-
-        method keyboard_height : int
-      end
+    type t = private Ojs.t
+    val keyboard_height : t -> int
 
     val add_event_listener : string -> (unit -> unit) -> unit
     [@@js.global "window.addEventListener"]
-    val add_event_listener_ev : string -> (event_height -> unit) -> unit
+    val add_event_listener_ev : string -> (t -> unit) -> unit
     [@@js.global "window.addEventListener"]
 
     [@@@js.stop]
     val did_hide : (unit -> unit) -> unit
     val will_show : (unit -> unit) -> unit
     val will_hide : (unit -> unit) -> unit
-    val height_will_change : (event_height -> unit) -> unit
+    val height_will_change : (t -> unit) -> unit
     [@@@js.start]
 
     [@@@js.implem
@@ -41,8 +60,4 @@ module Event :
       add_event_listener_ev "keyboardHeightWillChange" f
     ]
   end
-(* -------------------------------------------------------------------------- *)
-
-(* -------------------------------------------------------------------------- *)
-val t : unit -> keyboard
 (* -------------------------------------------------------------------------- *)
