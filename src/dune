@@ -1,0 +1,12 @@
+(rule
+ (targets cordova_keyboard.ml)
+ (deps cordova_keyboard.mli)
+ (action (run %{bin:gen_js_api} %{deps})))
+
+(library
+ (public_name cordova-plugin-keyboard)
+ (name cordova_keyboard)
+ (modes byte)
+ (libraries gen_js_api js_of_ocaml)
+ (preprocess (pps js_of_ocaml-ppx))
+)
